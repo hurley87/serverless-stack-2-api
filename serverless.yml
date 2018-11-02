@@ -27,8 +27,9 @@ provider:
   stage: dev
   region: us-east-1
 
-  environment:
-    tableName: ${self:custom.tableName}
+environment:
+  tableName:
+    Ref: NotesTable
 
   iamRoleStatements:
     - Effect: Allow
