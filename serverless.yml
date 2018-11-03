@@ -20,6 +20,9 @@ custom:
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
+  # env variables
+  environment: ${file(env.yml):${self:custom.stage}, file(env.yml):default}
+
 
 provider:
   name: aws
@@ -27,9 +30,12 @@ provider:
   stage: dev
   region: us-east-1
 
-environment:
-  tableName:
-    Ref: NotesTable
+ # These environment variables are made available to our functions
+  # under process.env.
+  environment:
+    tableName: ${self:custom.tableName}
+    stripeSecretKey: ${self:custom.environment.stripeSecretKey}
+
 
   iamRoleStatements:
     - Effect: Allow
@@ -119,7 +125,7 @@ resources:
   # Cognito
   - ${file(resources/cognito-user-pool.yml)}
   - ${file(resources/cognito-identity-pool.yml)}
-  
+
   billing:
     handler: billing.main
     events:
